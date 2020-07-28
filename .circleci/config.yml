@@ -1,75 +1,13 @@
+# Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
-executors:
-  default:
-    working_directory: ~/workspace
-    docker:
-      - image: node:12
-
-commands:
-  restore_npm:
-    steps:
-      - restore_cache:
-          name: Restore npm dependencies
-          key: npm-{{ checksum "package.json" }}
-
-  save_npm:
-    steps:
-      - save_cache:
-          name: Cache npm dependencies
-          key: npm-{{ checksum "package.json" }}
-          paths:
-            - ~/workspace/node_modules
-
-jobs:
-  setup:
-    executor: default
-    steps:
-      - checkout
-      - run:
-          name: Install dependencies
-          command: npm install
-      - save_npm
-
-  lint:
-    executor: default
-    steps:
-      - checkout
-      - restore_npm
-      - run: 
-          name: Lint
-          command: npm run lint
-      - save_npm
-
-  build:
-    executor: default
-    steps:
-      - checkout
-      - restore_npm
-      - run: 
-          name: Build
-          command: npm run build
-      - save_npm
-
-  test:
-    executor: default
-    steps:
-      - checkout
-      - restore_npm
-      - run: 
-          name: Test
-          command: npm run test:unit
-      - save_npm
-
+# Use a package of configuration called an orb.
+orbs:
+  # Declare a dependency on the welcome-orb
+  welcome: circleci/welcome-orb@0.4.1
+# Orchestrate or schedule a set of jobs
 workflows:
-  pull-request:
+  # Name the workflow "welcome"
+  welcome:
+    # Run the welcome/run job in its own container
     jobs:
-      - setup
-      - lint:
-          requires:
-            - setup
-      - build:
-          requires:
-            - lint
-      - test:
-          requires:
-            - build
+      - welcome/run
