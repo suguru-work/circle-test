@@ -3,7 +3,22 @@ executors:
   default:
     working_directory: ~/workspace
     docker:
-      - image: circleci/node:12
+      - image: node:12
+
+commands:
+  restore_npm:
+    steps:
+      - restore_cache:
+          name: Restore npm dependencies
+          key: npm-{{ checksum "package.json" }}
+
+  save_npm:
+    steps:
+      - save_cache:
+          name: Cache npm dependencies
+          key: npm-{{ checksum "package.json" }}
+          paths:
+            - ~/workspace/node_modules
 
 jobs:
   setup:
@@ -13,38 +28,47 @@ jobs:
       - run:
           name: Install dependencies
           command: npm install
+      - save_npm
 
   lint:
     executor: default
     steps:
       - checkout
+      - restore_npm
       - run: 
           name: Lint
           command: npm run lint
+      - save_npm
 
   build:
     executor: default
     steps:
       - checkout
+      - restore_npm
       - run: 
           name: Build
           command: npm run build
+      - save_npm
 
   test:
     executor: default
     steps:
       - checkout
+      - restore_npm
       - run: 
           name: Test
           command: npm run test:unit
+      - save_npm
 
   firebase:
     executor: default
     steps:
       - checkout
+      - restore_npm
       - run: 
           name: Deploy to Firebase Hosting
           command: ./node_modules/.bin/firebase deploy --token=$FIREBASE_TOKEN
+      - save_npm
 
 workflows:
   pull-request:
