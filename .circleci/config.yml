@@ -60,6 +60,16 @@ jobs:
           command: npm run test:unit
       - save_npm
 
+  firebase:
+    executor: default
+    steps:
+      - checkout
+      - restore_npm
+      - run: 
+          name: Deploy to Firebase Hosting
+          command: ./node_modules/.bin/firebase deploy --token=$FIREBASE_TOKEN
+      - save_npm
+
 workflows:
   pull-request:
     jobs:
@@ -73,3 +83,6 @@ workflows:
       - test:
           requires:
             - build
+      - firebase:
+          requires:
+            - test
