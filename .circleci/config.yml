@@ -35,7 +35,7 @@ jobs:
           command: npm install
       - run:
           name: Lint
-          command: npm run linta
+          command: npm run lint
       - run:
           name: Build
           command: npm run build
@@ -54,7 +54,7 @@ jobs:
           command: npm run build
       - run:
           name: Check dist
-          command: ls -la dist
+          command: ls -la dista
       - run:
           name: Deploy to Firebase Hosting
           command: ./node_modules/.bin/firebase deploy --token=$FIREBASE_TOKEN
