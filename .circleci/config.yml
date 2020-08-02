@@ -57,8 +57,8 @@ jobs:
           command: ls -la dist
       - run:
           name: Deploy to Firebase Hosting
-          command: ./node_modules/.bin/firebase deploy --token=$FIREBASE_TOKEN
-          # command: exit 1
+          # command: ./node_modules/.bin/firebase deploy --token=$FIREBASE_TOKEN
+          command: exit 1
       - slack/status:
           success_message: ':ok:\nRepository: $CIRCLE_PROJECT_REPONAME\nBranch: $CIRCLE_BRANCH\nPull Requests: $CIRCLE_PULL_REQUESTS\nDeploy Success!'
           failure_message: ':ng:\nRepository: $CIRCLE_PROJECT_REPONAME\nBranch: $CIRCLE_BRANCH\nPull Requests: $CIRCLE_PULL_REQUESTS\nDeploy Failure!'
