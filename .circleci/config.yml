@@ -21,55 +21,33 @@ commands:
             - ~/workspace/node_modules
 
 jobs:
-  setup:
-    executor: default
-    steps:
-      - checkout
-      - run:
-          name: Install dependencies
-          command: npm install
-
-  lint:
-    executor: default
-    steps:
-      - run: 
-          name: Lint
-          command: npm run lint
-
   build:
     executor: default
     steps:
+      - checkout
+      - restore_npm
+      - run:
+          name: Install dependencies
+          command: npm install
+      - run: 
+          name: Lint
+          command: npm run lint
       - run: 
           name: Build
           command: npm run build
-
-  test:
-    executor: default
-    steps:
+      - run:
+          name: Check dist
+          command: ls -la dist
+      - save_npm
       - run: 
           name: Test
           command: npm run test:unit
-
-  firebase:
-    executor: default
-    steps:
       - run: 
           name: Deploy to Firebase Hosting
-          command: ls -la
+          command: ./node_modules/.bin/firebase deploy --token=$FIREBASE_TOKEN
+
 
 workflows:
   pull-request:
     jobs:
-      - setup
-      - lint:
-          requires:
-            - setup
-      - build:
-          requires:
-            - lint
-      - test:
-          requires:
-            - build
-      - firebase:
-          requires:
-            - test
+      - build
