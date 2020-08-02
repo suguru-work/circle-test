@@ -36,9 +36,6 @@ jobs:
           name: Build
           command: npm run build
       - run:
-          name: Check dist
-          command: ls -la dist
-      - run:
           name: Test
           command: npm run test:unit
       - save_npm
@@ -51,11 +48,14 @@ jobs:
           name: Build
           command: npm run build
       - run:
+          name: Check dist
+          command: ls -la dist
+      - run:
           name: Deploy to Firebase Hosting
           command: ./node_modules/.bin/firebase deploy --token=$FIREBASE_TOKEN
 
 workflows:
-  pull-request:
+  push-build:
     jobs:
       - build
       - deploy:
