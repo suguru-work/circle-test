@@ -28,47 +28,34 @@ jobs:
       - run:
           name: Install dependencies
           command: npm install
-      - save_npm
 
   lint:
     executor: default
     steps:
-      - checkout
-      - restore_npm
       - run: 
           name: Lint
           command: npm run lint
-      - save_npm
 
   build:
     executor: default
     steps:
-      - checkout
-      - restore_npm
       - run: 
           name: Build
           command: npm run build
-      - save_npm
 
   test:
     executor: default
     steps:
-      - checkout
-      - restore_npm
       - run: 
           name: Test
           command: npm run test:unit
-      - save_npm
 
   firebase:
     executor: default
     steps:
-      - checkout
-      - restore_npm
       - run: 
           name: Deploy to Firebase Hosting
           command: ls -la
-      - save_npm
 
 workflows:
   pull-request:
